@@ -1,93 +1,6 @@
 #ifndef _BME280_LIBRARY__
 #define _BME280_LIBRARY__
 
-enum BME280_STATUS
-{
-	BME280_OK,
-	BME280_FAIL
-};
-
-struct bme280_register_frame
-{
-	uint8_t registerAddress;
-	uint8_t registerData;
-};
-
-struct bme280_register_ctrl_hum
-{
-	uint8_t reserved: 	5; // do not touch this register
-	uint8_t osrs_h:		3;
-};
-
-struct bme280_register_status
-{
-	uint8_t reserved_from_bit_7_to_4: 	4;
-	uint8_t measuring: 					1;
-	uint8_t reserved_from_bit_2_to_1:	2;
-	uint8_t im_update:					1;
-};
-
-struct bme280_register_ctrl_meas
-{
-	uint8_t osrs_t:	3;
-	uint8_t osrs_p: 3;
-	uint8_t mode:	2;
-};
-
-struct bme280_register_config
-{
-	uint8_t t_sb: 			3;
-	uint8_t filter: 		3;
-	uint8_t reserved_bit_1: 1;
-	uint8_t spi3w_en: 		1;
-};
-
-struct bme280_register_press_msb
-{
-	uint8_t press_msb;
-};
-
-struct bme280_register_press_lsb
-{
-	uint8_t press_lsb;
-};
-
-struct bme280_register_press_xlsb
-{
-	uint8_t press_xlsb: 				4;
-	uint8_t reserved_from_bit_3_to_0: 	4;
-};
-
-struct bme280_register_temp_msb
-{
-	uint8_t temp_msb;
-};
-
-struct bme280_register_temp_lsb
-{
-	uint8_t temp_lsb;
-};
-
-struct bme280_register_temp_xlsb
-{
-	uint8_t temp_xlsb: 				  	4;
-	uint8_t reserved_from_bit_3_to_0: 	4;
-};
-
-struct bme280_register_hum_msb
-{
-	uint8_t hum_msb;
-};
-
-struct bme280_register_hum_lsb
-{
-	uint8_t hum_lsb;
-};
-
-typedef enum BME280_STATUS BME280_STATUS;
-typedef struct bme280_handler_t bme280_handler_t;
-typedef struct bme280_register_frame bme280_register_frame;
-
 #define DEFAULT_TIMEOUT 				100
 #define BME280_RW_READ 					1
 #define BME280_RW_WRITE 				0
@@ -130,6 +43,104 @@ typedef struct bme280_register_frame bme280_register_frame;
 #define BME280_REGISTER_ADDRESS_TEMP_XLSB	0xFC
 #define BME280_REGISTER_ADDRESS_HUM_MSB		0xFD
 #define BME280_REGISTER_ADDRESS_HUM_LSB		0xFE
+
+
+
+enum BME280_STATUS
+{
+	BME280_OK,
+	BME280_FAIL
+};
+
+typedef struct bme280_register_frame
+{
+	uint8_t registerAddress;
+	uint8_t registerData;
+}bme280_register_frame;
+
+typedef struct bme280_register_ctrl_hum
+{
+	uint8_t registerAddress;
+	uint8_t reserved: 	5; // do not touch this register
+	uint8_t osrs_h:		3;
+}bme280_register_ctrl_hum;
+
+typedef struct bme280_register_status
+{
+	uint8_t reserved_from_bit_7_to_4: 	4;
+	uint8_t measuring: 					1;
+	uint8_t reserved_from_bit_2_to_1:	2;
+	uint8_t im_update:					1;
+}bme280_register_status;
+
+typedef struct bme280_register_ctrl_meas
+{
+	uint8_t registerAddress;
+	uint8_t osrs_t:	3;
+	uint8_t osrs_p: 3;
+	uint8_t mode:	2;
+}bme280_register_ctrl_meas;
+
+typedef struct bme280_register_config
+{
+	uint8_t registerAddress;
+	uint8_t t_sb: 			3;
+	uint8_t filter: 		3;
+	uint8_t reserved_bit_1: 1;
+	uint8_t spi3w_en: 		1;
+}bme280_register_config;
+
+typedef struct bme280_register_press_msb
+{
+	uint8_t press_msb;
+}bme280_register_press_msb;
+
+typedef struct bme280_register_press_lsb
+{
+	uint8_t press_lsb;
+}bme280_register_press_lsb;
+
+typedef struct bme280_register_press_xlsb
+{
+	uint8_t press_xlsb: 				4;
+	uint8_t reserved_from_bit_3_to_0: 	4;
+}bme280_register_press_xlsb;
+
+typedef struct bme280_register_temp_msb
+{
+	uint8_t temp_msb;
+}bme280_register_temp_msb;
+
+typedef struct bme280_register_temp_lsb
+{
+	uint8_t temp_lsb;
+}bme280_register_temp_lsb;
+
+typedef struct bme280_register_temp_xlsb
+{
+	uint8_t temp_xlsb: 				  	4;
+	uint8_t reserved_from_bit_3_to_0: 	4;
+}bme280_register_temp_xlsb;
+
+typedef struct bme280_register_hum_msb
+{
+	uint8_t hum_msb;
+}bme280_register_hum_msb;
+
+typedef struct bme280_register_hum_lsb
+{
+	uint8_t hum_lsb;
+}bme280_register_hum_lsb;
+
+typedef struct bme280_control_registers
+{
+	bme280_register_ctrl_hum	ctrlHum;
+	bme280_register_ctrl_meas 	ctrlMeas;
+	bme280_register_config 		config;
+}bme280_control_registers;
+
+typedef enum BME280_STATUS BME280_STATUS;
+typedef struct bme280_handler_t bme280_handler_t;
 
 bme280_handler_t* bme280_init(I2C_HandleTypeDef *i2c_handler);
 void bme280_destroy(bme280_handler_t* bme280_handler);
