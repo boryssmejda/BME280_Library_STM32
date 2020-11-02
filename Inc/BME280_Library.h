@@ -22,11 +22,12 @@
 #define BME280_OPERATION_MODE_NORMAL	3
 
 // Oversampling definitions
-#define BME280_OVERSAMPLING_1 	1
-#define BME280_OVERSAMPLING_2 	2
-#define BME280_OVERSAMPLING_4 	3
-#define BME280_OVERSAMPLING_8 	4
-#define BME280_OVERSAMPLING_16 	5
+#define BME280_OVERSAMPLING_SKIPPED 0
+#define BME280_OVERSAMPLING_1 		1
+#define BME280_OVERSAMPLING_2 		2
+#define BME280_OVERSAMPLING_4 		3
+#define BME280_OVERSAMPLING_8 		4
+#define BME280_OVERSAMPLING_16 		5
 
 // Table 27 t_sb definitions - t standby
 #define BME280_STANDBY_0_5		0
@@ -178,18 +179,11 @@ typedef struct //bme280_registers_humidity
 	bme280_register_hum_lsb		humLsb;
 }bme280_registers_humidity;
 
-typedef struct //bme280_registers_compensation_parameters_temperature
+typedef struct
 {
-	uint8_t registerAddress;
-
-	uint8_t dig_T1_lsb;
-	uint8_t dig_T1_msb;
-
-	uint8_t dig_T2_lsb;
-	uint8_t dig_T2_msb;
-
-	uint8_t dig_T3_lsb;
-	uint8_t dig_T3_msb;
+	uint16_t 	dig_T1;
+	int16_t  	dig_T2;
+	int16_t  	dig_T3;
 }bme280_registers_compensation_parameters_temperature;
 
 
@@ -197,13 +191,15 @@ typedef enum BME280_STATUS BME280_STATUS;
 typedef struct bme280_handler_t bme280_handler_t;
 typedef int32_t BME280_S32_t;
 
-bme280_handler_t* bme280_init(I2C_HandleTypeDef *i2c_handler);
+bme280_handler_t* bme280_init(I2C_HandleTypeDef *i2c_handler, bme280_control_registers ctrlRegs);
 void bme280_destroy(bme280_handler_t* bme280_handler);
+
+BME280_STATUS BME280_setControlRegisters(bme280_handler_t* bme280_handler, bme280_control_registers controlReg);
 
 BME280_STATUS BME280_getChipID(bme280_handler_t* bme280_handler, uint8_t* chipID, uint32_t timeout);
 BME280_STATUS BME280_resetChip(bme280_handler_t* bme280_handler, uint32_t timeout);
 
-BME280_STATUS BME280_getTemperatureCompensationParameters(bme280_handler_t* bme280_handler, bme280_registers_compensation_parameters_temperature* compTermp);
+BME280_STATUS BME280_getTemperatureCompensationParameters(bme280_handler_t* bme280_handler, bme280_registers_compensation_parameters_temperature* compTemp);
 BME280_STATUS BME280_readADCTemperature(bme280_handler_t* bme280_handler, BME280_S32_t *adc_T, uint32_t timeout);
 BME280_S32_t BME280_convertTempIntoReadable(BME280_S32_t adc_T);
 
